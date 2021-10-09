@@ -1,0 +1,52 @@
+body {
+    font-family: "Open Sans", sans-serif;
+
+}
+.contentWrapper {
+    display:flex;
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+}
+
+h1 {
+    font-family: "Open Sans", sans-serif;
+    font-weight: bolder;
+    font-size: 2.8rem;
+}
+
+.headerBox {
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-bottom: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.donateButton {
+    color: rgb(255, 255, 255);
+    background-color: rgb(53, 53, 53);
+    font-weight: bold;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+    margin-right: 5px;
+
+}
+
+.pastDonationsButton {
+    color: rgb(255, 255, 255);
+    background-color: rgb(104, 104, 104);
+    font-weight: bold;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.hide {
+    display: none;
+}

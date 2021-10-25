@@ -1,3 +1,4 @@
 .env
 activities.db
 donations.db
+/node_modules

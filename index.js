@@ -4,6 +4,9 @@ const express = require('express');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 const GoogleStrategy = require('passport-google-oauth20');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripeCBUrl = 'http://localhost:5000/stripe/success'; 
+const cors = require('cors');
 
 const userClientID = process.env.GOOGLE_CLIENT_ID;
 const userClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -21,6 +24,7 @@ passport.use(new GoogleStrategy(googleLoginData, gotProfile));
 //start building server pipeline
 const app = express();
 const dbo = require('./databaseOps.js'); 
+const { response } = require('express');
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -39,6 +43,14 @@ app.use(passport.initialize());
 //calls deserialize user if cookie is valid eventually which we use to check
 //for profile in DB 
 app.use(passport.session());
+
+//might not need this 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
+});
+
 
 //serve static files at first 
 app.get('/', (req, res) => {
@@ -79,15 +91,8 @@ app.get('/logout', (req, res) => {
 app.get('/*', isAuthenticated, express.static('user'));
 
 app.get('/name', (req, res) => {
-    let username = req.user.id; 
-    
-    dbo.userSearch(username).then( (firstName) => {
-        console.log("name is : ", firstName);
-        res.send(firstName);
-    }).catch((error) => {
-        console.log("error obtaining name: ", error);
-    });
-
+    let username = req.user.name; 
+    res.json({name: username});
 });
 
 /*
@@ -95,8 +100,48 @@ ADD NECESSARY ENDPOINTS HERE
 */
 
 //STRIPE STUFF
-app.post('/create-payment-intent', async (req, res) => {
+app.post('/create-checkout-session', async(req, res)=> {//make it async later
     
+    // const newProduct = await stripe.products.create({
+    //     name: 'New Donation',
+    // });
+
+    // const price = await stripe.prices.create({
+    //     unit_amount: req.body.donationAmount,//non negative int in cents
+    //     currency: 'usd', //can add dropdown to choose currency later
+    //     product: newProduct.id,
+    // });
+
+
+
+    const session = await stripe.checkout.sessions.create({
+        line_items: [
+            {
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: 'Masjid Al Noor Donation',
+                    },
+                    unit_amount: req.body.donationAmount,
+                },
+                quantity: 1,
+            },
+        ],
+        payment_method_types: [
+            'card',
+        ],
+        mode: 'payment',
+        success_url: stripeCBUrl, //on success callback insert into DB the transaction
+        cancel_url: stripeCBUrl, //same thing for now 
+    });
+
+    //res.redirect(303, session.url);
+    res.json({url: session.url});
+});
+
+//change this function later 
+app.get('/stripe/success', (req, res) => {
+    res.redirect('/success.html');
 });
 //STRIPE STUFF END 
 

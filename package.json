@@ -1,0 +1,33 @@
+{
+  "name": "masjidZakatApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdullah-mohammed/Masjid-Zakat-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abdullah-mohammed/Masjid-Zakat-App/issues"
+  },
+  "homepage": "https://github.com/abdullah-mohammed/Masjid-Zakat-App#readme",
+  "dependencies": {
+    "cookie-session": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "passport": "^0.5.0",
+    "passport-google-oauth20": "^2.0.0",
+    "sqlite3": "^4.2.0",
+    "stripe": "^8.184.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
+}

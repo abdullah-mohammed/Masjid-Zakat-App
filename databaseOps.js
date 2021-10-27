@@ -38,15 +38,8 @@ async function testDB () {
 }
 
 async function insertDonation(userid,newEntry) {
-  //let [yyyy, mm, dd] = newEntry.date.split("-"); 
-  //var mydate = new Date(Date.UTC(yyyy, mm-1, dd, 0, 0));
-  // TZ issues workaround at browser side
-	//var userid_str = "'"+userid+"'";
-	//console.log("insertAct:",userid_str);
-  var fulldate = new Date(newEntry.date);
-  var mydate = fulldate.getTime();
   console.log("insert");
-  await db.run(insertDB,[userid,newEntry.message, mydate, newEntry.scalar]);
+  await db.run(insertDB,[userid,newEntry.message, newEntry.date, newEntry.amount]);
 }
 
 async function insertProfile(userid,name){
@@ -164,7 +157,7 @@ async function full2() {
 // }
 
 //returns array of all donations and messages 
-async function allUserDonations(userInfo) {
+async function allUserDonations(userinfo) {
     var userid_str = "'"+userinfo+"'";
 
     const getChartDB = "select * from DonationsTable where googleuserid = "+userid_str+"  ORDER BY date ";

@@ -6,6 +6,7 @@ const cookieSession = require('cookie-session');
 const GoogleStrategy = require('passport-google-oauth20');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const stripeCBUrl = 'http://localhost:5000/stripe/success'; 
+const stripeCancelURL = 'http://localhost:5000/stripe/cancel'; 
 const cors = require('cors');
 
 const userClientID = process.env.GOOGLE_CLIENT_ID;
@@ -54,7 +55,11 @@ app.use((req, res, next) => {
 
 //serve static files at first 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/homepage.html');
+    if (req.user) {
+        res.sendFile(__dirname + '/user/donations.html');
+    } else {
+        res.sendFile(__dirname + '/public/homepage.html');
+    }
 });
 
 //serve files from public
@@ -100,19 +105,7 @@ ADD NECESSARY ENDPOINTS HERE
 */
 
 //STRIPE STUFF
-app.post('/create-checkout-session', async(req, res)=> {//make it async later
-    
-    // const newProduct = await stripe.products.create({
-    //     name: 'New Donation',
-    // });
-
-    // const price = await stripe.prices.create({
-    //     unit_amount: req.body.donationAmount,//non negative int in cents
-    //     currency: 'usd', //can add dropdown to choose currency later
-    //     product: newProduct.id,
-    // });
-
-
+app.post('/create-checkout-session', async(req, res)=> {
 
     const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -131,19 +124,46 @@ app.post('/create-checkout-session', async(req, res)=> {//make it async later
             'card',
         ],
         mode: 'payment',
-        success_url: stripeCBUrl, //on success callback insert into DB the transaction
-        cancel_url: stripeCBUrl, //same thing for now 
+        success_url: stripeCBUrl + '?session_id={CHECKOUT_SESSION_ID}&message=' + req.body.message, //on success callback insert into DB the transaction
+        cancel_url: stripeCancelURL, 
     });
 
     //res.redirect(303, session.url);
     res.json({url: session.url});
 });
 
-//change this function later 
-app.get('/stripe/success', (req, res) => {
+//called upon successful stripe checkout
+app.get('/stripe/success', async (req, res) => {
+    const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+    const amountTotal = (session.amount_total)/100;
+    const currDate = new Date().getTime();//(new Date()).toLocaleString("en-US")
+    const messageSending = req.query.message;
+
+    const userData = {amount: amountTotal, date: currDate, message: messageSending};
+    console.log("on Stripe Success: " + amountTotal + " message is : " + messageSending + " date is: " + currDate);
+    //insert into db 
+    dbo.insertDonation(req.user.id, userData).catch((error) => {
+        console.log(error); 
+    });
+
     res.redirect('/success.html');
 });
+
+//user cancelled input on stripe
+app.get('/stripe/cancel', (req, res) => {
+    res.redirect('/donations.html');
+});
 //STRIPE STUFF END 
+
+//gets all past user payments
+app.get('/payment-history', (req, res) => {
+    dbo.allUserDonations(req.user.id).then((paymentArr)=> {
+        //payment history in json format stored as array of objects with name payment and date
+        res.send(paymentArr); 
+    }).catch((error) => {
+        console.log(error);
+    });
+});
 
 //end of pipeline 
 app.use(fileNotFound);
@@ -175,7 +195,7 @@ function isAuthenticated(req, res, next) {
       next();
     } else {
       res.redirect('/homepage.html');  // send response telling
-      // Browser to go to login page
+      // Browser to go to log in page
     }
 }
   

@@ -7,7 +7,7 @@
     <title>Masjid Al Noor Donations</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href = "reset.css" rel = "stylesheet" type = "text/css"/>
+    <link href="reset.css" rel="stylesheet" type="text/css" />
     <link href="donationStyle.css" rel="stylesheet" type="text/css" />
 
     <script defer type="module" src="donationsApp.js"></script>
@@ -15,28 +15,29 @@
 </head>
 
 <body>
-    <div class = "contentWrapper">
-        <div class = "headerBox">
-            <h1>Welcome <a id = "nameSlot"></a></h1>
+    <div class="contentWrapper">
+        <div class="headerBox">
+            <a href = "/logout">
+                <button id="logoutButton">Logout</button>
+            </a>
+            <h1>Welcome <a id="nameSlot"></a></h1>
             <p>Thank you for deciding to donate today. Please click one of the buttons below.</p>
         </div>
-        <div class = "buttonsBox hide">
-            <button class = "donateButton" id = "donateBtn">Donate</button>
-            <button class = "pastDonationsButton" id = "pastDonateBtn">Past Donations</button>
+        <div class="buttonsBox hide">
+            <button class="donateButton" id="donateBtn">Donate</button>
+            <button class="pastDonationsButton" id="pastDonateBtn">Past Donations</button>
         </div>
-        <div class = "formBox">
-            <!-- BOILERPLATE STRIPE CODE  -->
-            <form id = "payment-form">
-                <label for = "name">Name</label>
-                <input type = "text" id = "name" value = "">
-                <label for = "email">Email</label>
-                <input type ="email" id = "email" value = "">
-                <label for = "price">Price</label>
-                <input type = "price" id = "price" value = ""> 
+        <div class="formBox">
+            <form id="payment-form">
+                <label for="price">Price</label>
+                <input type="price" id="price" value="">
+                <label for="message">Note</label>
+                <input type="message" id="message" value="">
             </form>
-            <button id = "submitPayment">Submit Payment</button>
+            <button id="submitPayment">Submit Payment</button>
+            <button id="donationHistory">Donation History</button>
         </div>
-    
-    <script src = "https://js.stripe.com/v3/"></script>
+
+        <script src="https://js.stripe.com/v3/"></script>
     </div>
 </body>

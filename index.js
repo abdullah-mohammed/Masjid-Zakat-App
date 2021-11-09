@@ -27,7 +27,7 @@ const app = express();
 const dbo = require('./databaseOps.js'); 
 const { response } = require('express');
 
-app.use(express.json());
+app.use(express.json());//automatically parses json obj passed in 
 app.use(express.static('public'));
 
 //first stage for debugging

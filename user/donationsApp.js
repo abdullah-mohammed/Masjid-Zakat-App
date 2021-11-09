@@ -3,8 +3,8 @@
 let paymentButton = document.getElementById('submitPayment');
 paymentButton.addEventListener('click', paymentButton_onclick);
 
-let donationHButton = document.getElementById('donationHistory');
-donationHButton.addEventListener('click', donationHButton_onclick);
+// let donationHButton = document.getElementById('donationHistory');
+// donationHButton.addEventListener('click', donationHButton_onclick);
 
 window.addEventListener('load', (event) => {
     initName();
@@ -66,7 +66,9 @@ function paymentButton_onclick() {
         }
     }
 
-    let price = parseFloat(priceData.value) * 100; 
+    let price = parseFloat(priceData.value); 
+    //round to at most 2 decimal places and then convert to cents 
+    price = (Math.round(price * 100)/100) * 100; 
 
     if (price <= 50) {
         alert("Invalid donation amount. Please enter a donation amount greater than $0.50.");
@@ -80,22 +82,20 @@ function paymentButton_onclick() {
     });
 }
 
-async function getPaymentHistory() {
-    let dataJSON = await fetch('/payment-history');
+// async function getPaymentHistory() {
+//     let dataJSON = await fetch('/payment-history');
 
-    if (dataJSON.ok) {
-        return dataJSON.json();
-    } else {
-        console.log(error);
-    }
-}
+//     if (dataJSON.ok) {
+//         return dataJSON.json();
+//     } else {
+//         console.log(error);
+//     }
+// }
 
-function donationHButton_onclick() {
-    console.log('DONATION HISTORY BUTTON WORKING')
-
-    getPaymentHistory().then((dataArr) => {
-        console.log(dataArr);
-    }).catch((error) => {
-        console.log(error);
-    });
-}
+// function donationHButton_onclick() {
+//     getPaymentHistory().then((dataArr) => {
+//         console.log(dataArr);
+//     }).catch((error) => {
+//         console.log(error);
+//     });
+// }

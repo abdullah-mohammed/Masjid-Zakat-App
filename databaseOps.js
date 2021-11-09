@@ -171,7 +171,7 @@ async function allUserDonations(userinfo) {
             amount : result[i].amount
           }
           returnChart[i] = chartReturn;
-          console.log(returnChart);
+          //console.log(returnChart);
     }
     return(JSON.stringify(returnChart));
 }

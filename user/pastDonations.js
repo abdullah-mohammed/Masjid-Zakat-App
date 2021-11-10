@@ -12,7 +12,8 @@ function intializeAltText() {
         tableDiv.removeChild(tableDiv.firstChild);
     }
 
-    let altText = document.createElement("h1");
+    let altText = document.createElement("h2");
+    altText.className = "altTextStyle";
     altText.textContent = "No past donations. Please return to the home screen to make a donation!";
 
     tableDiv.append(altText);

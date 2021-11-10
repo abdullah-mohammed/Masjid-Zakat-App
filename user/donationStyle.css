@@ -100,3 +100,45 @@ button:hover {
     margin-left: auto; 
     margin-right: auto; 
 }
+
+.donationsTable {
+    background-color: white; 
+    width: 80vw;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 7px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+th {
+    font-weight: bolder;
+}
+
+.dHistoryContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.altTextStyle {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.successPageContent {
+    text-align: center;
+    top: 25%;
+    position: absolute;
+    
+}
+
+@media only screen and (min-width: 750px) {
+    .successPageContent {
+        left: 25%;
+        right: 25%; 
+    }
+}

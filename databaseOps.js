@@ -47,15 +47,13 @@ async function insertProfile(userid,name){
   console.log(typeof name);
   var userid_str = "'"+userid+"'";
   var name_str = "'"+name+"'";
-  const cmd = "select * from Profile where googleuserid = "+userid_str; //+ " and fname = "+name;
+  const cmd = "select * from Profile where googleuserid = "+userid_str; 
   console.log('cmd insert:',cmd)
   let result = await db.all(cmd);
   console.log("result:", result);
-  //name = "'"+name+"'";
+
   if(!(result.length > 0)){
-    //const cmd2 = "INSERT INTO Profile (googleuserid, fname) VALUES('"+userid+"', '"+name+"')";
     await db.run(insertProfileDB,[userid,name]);
-    //await db.run(cmd2);
   }else{
     return {};
   }
@@ -71,39 +69,8 @@ async function userSearch(userinfo){
   return await result[0].fname;
 }
 
-/*
-//modify this to return all donations for a single user 
-async function reminder(userinfo) {
-	var userid_str = "'"+userinfo+"'";
-  const today = new Date().getTime();
-  const remDB = "select * from DonationsTable where googleuserid = "+userid_str+" and amount = -1 and date < " + today.toString() + " ORDER BY date DESC;";
-
-  let result = await db.all(remDB);
-  if (result.length > 0) {
-    // first element, if any will be most recent -> return
-    for (var i = 0; i < result.length; i++) {
-      // delete older entries
-      const delDB = "delete from DonationsTable where rowIdNum=" + result[i].rowIdNum.toString();
-      await db.run(delDB);
-    }
-    db.run("vacuum");
-    // return only data fields (names as per fitnessLog.js)
-    var retData = {
-    activity: result[0].activity,
-    date: result[0].date,
-    scalar: result[0].amount 
-    } 
-    return JSON.stringify(retData);
-  }
-  return {};
-}
-
-*/
-
 // return the whole DB to debug
 async function full() {
-  //await db.deleteEverything(); // uncomment will delete DB on calling /dump (for debug)
-  //await db.run(insertProfileDB,["106057521533558260625","Joske"]); //test
   let result = await db.all(fullDB);
   console.log(result);
   return result;
@@ -114,47 +81,6 @@ async function full2() {
   console.log(result);
   return result;
 }
-
-// helper for chart 
-// async function getMostRecentAct(userid){
-//   const today = new Date();
-//   today.setHours(0,0,0,0);
-//   const getRecent = "select * from DonationsTable where googleuserid = "+userid+" and amount != -1 and date < " + today.getTime().toString() + " ORDER BY date DESC";
-//   console.log(getRecent);
-//   let result = await db.all(getRecent);
-//   console.log("act:", result[0].activity);
-//   return result[0].activity; 
-// }
-
-
-// async function chart(userinfo,date,activity){
-// 	var userid_str = "'"+userinfo+"'";
-//   var yest = new Date();
-//   yest.setHours(0,0,0,0);
-//   yest.setDate(yest.getDate()-1);
-//   if (date > yest.getTime()) {
-//     return "error: date not in past";
-//   }
-//   if(activity === ''){
-//     let activity_obj = await getMostRecentAct(userid_str);
-//     activity = activity_obj;
-//   }
-//   const dayoffset = 86400000;
-//   const firstdate = date - (7 * dayoffset);
-//   const getChartDB = "select * from DonationsTable where googleuserid = "+userid_str+" and amount != -1 and date <= " +  date +" and date >" + firstdate+ " and activity = '" + activity + "'  ORDER BY date ";
-//   let result = await db.all(getChartDB);
-//   const returnChart = new Array;
-//   for(var i = 0; i < result.length; i++){
-//     var chartReturn = {
-//       activity : result[i].activity,
-//       date : result[i].date,
-//       amount : result[i].amount
-//     }
-//     returnChart[i] = chartReturn;
-//     console.log(returnChart);
-//   }
-//   return(JSON.stringify(returnChart));
-// }
 
 //returns array of all donations and messages 
 async function allUserDonations(userinfo) {
@@ -171,7 +97,6 @@ async function allUserDonations(userinfo) {
             amount : result[i].amount
           }
           returnChart[i] = chartReturn;
-          //console.log(returnChart);
     }
     return(JSON.stringify(returnChart));
 }
@@ -181,8 +106,6 @@ module.exports.testDB = testDB;
 module.exports.insertDonation = insertDonation;
 module.exports.full = full;
 module.exports.full2 = full2;
-//module.exports.reminder = reminder;
-//module.exports.chart = chart;
-module.exports.allUserDonations = allUserDonations; //added func 
+module.exports.allUserDonations = allUserDonations; 
 module.exports.insertProfile = insertProfile;
 module.exports.userSearch = userSearch;

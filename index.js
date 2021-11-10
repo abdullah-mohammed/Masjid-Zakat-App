@@ -1,4 +1,3 @@
-//NOTE: USING LOCAL HOST 5000 FOR DEVELOPMENT
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
@@ -45,9 +44,9 @@ app.use(passport.initialize());
 //for profile in DB 
 app.use(passport.session());
 
-//might not need this 
+//allows redirection to stripe payment page 
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Origin", "*"); 
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
 });
@@ -100,11 +99,7 @@ app.get('/name', (req, res) => {
     res.json({name: username});
 });
 
-/*
-ADD NECESSARY ENDPOINTS HERE 
-*/
-
-//STRIPE STUFF
+//stripe payment API integration
 app.post('/create-checkout-session', async(req, res)=> {
 
     const session = await stripe.checkout.sessions.create({
@@ -128,7 +123,6 @@ app.post('/create-checkout-session', async(req, res)=> {
         cancel_url: stripeCancelURL, 
     });
 
-    //res.redirect(303, session.url);
     res.json({url: session.url});
 });
 
@@ -153,7 +147,6 @@ app.get('/stripe/success', async (req, res) => {
 app.get('/stripe/cancel', (req, res) => {
     res.redirect('/donations.html');
 });
-//STRIPE STUFF END 
 
 //gets all past user payments
 app.get('/payment-history', (req, res) => {
@@ -225,12 +218,9 @@ passport.serializeUser((userid, done) => {
     done(null, userid);
 });
 
-//called by passport.session pipeline on everey HTTP req w a curr session cookie
+//called by passport.session pipeline on every HTTP req w a current session cookie
 passport.deserializeUser((userid, done) => {
     console.log("deserializeUser. Input is:", userid);
-    // here is a good place to look up user data in database using
-    // dbRowID. Put whatever you want into an object. It ends up
-    // as the property "user" of the "req" object. 
     let userData = { id:userid, name: "data from user's db row goes here" };
 
 

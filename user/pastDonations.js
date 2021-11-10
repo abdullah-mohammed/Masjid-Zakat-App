@@ -36,9 +36,14 @@ function initializeTable(userArray) {
     dTableBody.className = "dTableBody";
 
     //create header columns 
-    columnNames.forEach((name) => {
+    columnNames.forEach((name, index) => {
         let colLabel = document.createElement("th");
         colLabel.textContent = name; 
+        if (index > 0) {
+            colLabel.className = "colBorder bottomBorder";
+        } else {
+            colLabel.className = "bottomBorder";
+        }
         dTableHead.append(colLabel);
     });
 
@@ -51,8 +56,10 @@ function initializeTable(userArray) {
         let newAmount = document.createElement("td");
         let amountConverted = (Math.round(rowObj.amount * 100)/100).toFixed(2);
         newAmount.textContent = '$' + amountConverted; 
+        newAmount.className = "colBorder";
         let newMessage = document.createElement("td"); 
         newMessage.textContent = rowObj.message; 
+        newMessage.className = "colBorder";
         
         newRow.append(newDate);
         newRow.append(newAmount);
